@@ -1,21 +1,22 @@
-import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = "postgresql+asyncpg://user:password@localhost/dbname"
+DATABASE_URL = "postgresql+asyncpg://default_user:default_password@localhost:5434/default_db"
 
-engine = create_async_engine(DATABASE_URL, echo=True)
+engine = create_async_engine(DATABASE_URL)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+    class_=AsyncSession  # Используем асинхронную сессию
+)
 
-AsyncSessionLocal = sessionmaker(bind=engine,
-                                 autoflush=False,
-                                 autocommit=False,
-                                 class_=AsyncSession)
+async def get_db():
+    async with SessionLocal() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
 
-
-async def test_db():
-    async with AsyncSessionLocal() as session:
-        result = await session.execute("SELECT 1")
-        print(result.fetchall())
-
-
-asyncio.run(test_db())
+Base = declarative_base()

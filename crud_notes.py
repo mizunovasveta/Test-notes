@@ -1,6 +1,7 @@
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from . import models, schemas
+import models
+import schemas
 from models import Note
 from typing import Sequence
 

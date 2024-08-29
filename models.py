@@ -1,9 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
-
+from database import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -22,3 +19,6 @@ class Note(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="notes")
+
+
+
