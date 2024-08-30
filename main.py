@@ -12,15 +12,18 @@ import auth
 import crud_users
 from database import get_db
 
-
 app = FastAPI(title="Test notes")
 
 YANDEX_SPELLER_URL = "https://speller.yandex.net/services/spellservice.json/checkText"
 
+
 @app.post("/token", response_model=schemas.Token)
-async def login_for_access_token(db: AsyncSession = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_for_access_token(
+        db: AsyncSession = Depends(get_db),
+        form_data: OAuth2PasswordRequestForm = Depends()):
     user = await crud_users.get_user(db, username=form_data.username)
-    if not user or not auth.verify_password(form_data.password, user.hashed_password):
+    if not user or not auth.verify_password(form_data.password,
+                                            user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
@@ -66,7 +69,8 @@ async def create_note_route(
             note.title = corrected_title
 
     if note.description:
-        spelling_errors_description: list[dict] = await check_spelling(note.description)
+        spelling_errors_description: list[dict] = await check_spelling(
+            note.description)
         if spelling_errors_description:
             corrected_description: str = note.description
             for error in spelling_errors_description:
@@ -74,6 +78,6 @@ async def create_note_route(
                     corrected_description = corrected_description.replace(
                         error['word'], error['s'][0])
             note.description = corrected_description
-    return await crud_notes.create_note(db=db, note=note, user_id=current_user.id)
-
-
+    return await crud_notes.create_note(db=db,
+                                        note=note,
+                                        user_id=current_user.id)

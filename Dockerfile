@@ -1,7 +1,12 @@
-FROM postgres:latest
+FROM python:3.11-slim
 
-ENV POSTGRES_USER=default_user
-ENV POSTGRES_PASSWORD=default_password
-ENV POSTGRES_DB=default_db
+WORKDIR /app
 
-CMD ["postgres"]
+COPY . .
+
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 8000
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
