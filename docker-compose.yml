@@ -1,27 +1,18 @@
 version: '3.8'
 
 services:
+  web:
+    build: .
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+
   db:
     image: postgres:15
     environment:
       POSTGRES_USER: default_user
       POSTGRES_PASSWORD: default_password
       POSTGRES_DB: default_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5434:5434"
-
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgres://default_user:default_password@db:5434/default_db
-    ports:
-      - "8001:8000"
-
-volumes:
-  postgres_data:
+      - "5434:5432"

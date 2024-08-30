@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = "postgresql+asyncpg://default_user:default_password@localhost:5434/default_db"
+DATABASE_URL = "postgresql+asyncpg://default_user:default_password@db:5432/default_db"
 
 engine = create_async_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False,
